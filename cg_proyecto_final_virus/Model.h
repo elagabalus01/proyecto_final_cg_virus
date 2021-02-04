@@ -19,6 +19,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <SOIL2/stb_image.h>
 using namespace std;
 
 unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false);
@@ -42,6 +43,7 @@ public:
     // draws the model, and thus all its meshes
     void Draw(Shader shader)
     {
+        puts("Se dibuja");
         for(unsigned int i = 0; i < meshes.size(); i++)
             meshes[i].Draw(shader);
     }

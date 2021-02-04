@@ -23,6 +23,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Model.h"
+#include "Model_MultiTex.h"
 
 // Function prototypes
 void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode);
@@ -97,10 +98,17 @@ int main()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //PROGRAMA
-    Model modelo_prueba((char*)"modelos/prueba_2.obj");
-    Shader shader("Shaders/fresnel.vs", "Shaders/fresnel.frag");
-	glm::mat4 projection = glm::perspective(camera.GetZoom(), (GLfloat)SCREEN_WIDTH / (GLfloat)SCREEN_HEIGHT, 0.1f, 100.0f);
+    //Model modelo_prueba((char*)"modelos/prueba_2.obj");
+    //Shader shader("Shaders/fresnel.vs", "Shaders/fresnel.frag");
+	//Shader shader("Shaders/bump.vs", "Shaders/bump.frag");
+	//Model original((char*)"test/orange.obj");
+	//ModelMultiTex facade((char*)"modelos/facade/facade.obj");
+	ModelMultiTex naranja((char*)"test/padred.obj");
+	//ModelMultiTex naranja((char*)"test/orange.obj");
+	Shader bump("Shaders/bump.vs", "Shaders/bump.frag");
 
+	glm::mat4 projection = glm::perspective(camera.GetZoom(), (GLfloat)SCREEN_WIDTH / (GLfloat)SCREEN_HEIGHT, 0.1f, 100.0f);
+	Shader currentShader;
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -118,14 +126,28 @@ int main()
 		glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	    //Load Model
-	
-        shader.Use();
+		bump.Use();
+		currentShader = bump;
 		glm::mat4 view=camera.GetViewMatrix();
         glm::mat4 model(1);
-        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        modelo_prueba.Draw(shader);
+        model = glm::translate(model,glm::vec3(1.0f,1.0f,1.0f));
+		//model = scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glm::vec3 light(1.0f, 1.0f, 1.0f);
+		glm::vec3 light2(1.0f, 1.0f, 1.0f);
+		/*glUniform1d(glGetUniformLocation(currentShader.Program, "material.diffuse"), 1);
+		glUniform1d(glGetUniformLocation(currentShader.Program, "material.specular"), 0);*/
+        glUniformMatrix4fv(glGetUniformLocation(currentShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(glGetUniformLocation(currentShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(glGetUniformLocation(currentShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		glUniform3f(glGetUniformLocation(currentShader.Program, "dirLight.direction"),
+			1.0f,-1.0f,0.0f);
+			//camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
+		glUniform3f(glGetUniformLocation(currentShader.Program, "dirLight.ambient"), light2.x, light2.y, light2.z);
+		glUniform3f(glGetUniformLocation(currentShader.Program, "dirLight.diffuse"), light.x, light.y, light.z);
+		glUniform3f(glGetUniformLocation(currentShader.Program, "dirLight.specular"), light.x, light.y, light.z);
+		glUniform3f(glGetUniformLocation(currentShader.Program, "viewPos"),
+			camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
+        naranja.Draw(bump);
 		//Carga de modelo 
        /* view = camera.GetViewMatrix();	
 		model = glm::mat4(1);
@@ -133,8 +155,17 @@ int main()
 		model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		Mymodel.Draw(lightingShader);*/
-
-
+		/*ceballos.Use();
+		model= glm::mat4(1);
+		model = glm::scale(model,glm::vec3(0.1f,0.1f,0.1f));
+		glUniformMatrix4fv(glGetUniformLocation(ceballos.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(glGetUniformLocation(ceballos.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(ceballos.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		original.Draw(ceballos);
+		model = glm::translate(model,glm::vec3(0.0f,1.0f,0.0f));
+		glUniformMatrix4fv(glGetUniformLocation(ceballos.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		bump.Draw(ceballos);*/
+		
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}

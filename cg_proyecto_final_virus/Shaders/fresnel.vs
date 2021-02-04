@@ -51,9 +51,10 @@ void main(void)
 
     // Fresnel parameters
     float mRefractionRatio = 2.65f;
+    //float mFresnelBias = 0.1f;
     float mFresnelBias = 0.1f;
     float mFresnelScale = 5.0f;
-    float mFresnelPower = 1.0f;
+    float mFresnelPower = 0.1f;
 
     // Fresnel calculations
     vec3 cameraPosition = -view[3].xyz * mat3(view);

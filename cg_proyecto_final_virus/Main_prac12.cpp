@@ -21,6 +21,10 @@
 #include "Model.h"
 #include "Texture.h"
 #include "modelAnim.h"
+#include "Modelo_Material.h"
+#include "Mesh_Material.h"
+
+#include "Model_MultiTex.h"
 
 //MI CLASE
 #include "MiAnimacion.h"
@@ -36,7 +40,7 @@ const GLuint WIDTH = 800, HEIGHT = 600;
 int SCREEN_WIDTH, SCREEN_HEIGHT;
 
 // Camera
-Camera  camera(glm::vec3(-100.0f, 2.0f, -45.0f));
+Camera  camera(glm::vec3(10.0f, 0.0f, 0.0f), glm::vec3(0.0f,1.0f,0.0f), 180.0f, 0.0f);
 GLfloat lastX = WIDTH / 2.0;
 GLfloat lastY = HEIGHT / 2.0;
 bool keys[1024];
@@ -190,6 +194,7 @@ int main()
 	Shader SkyBoxshader("Shaders/SkyBox.vs", "Shaders/SkyBox.frag");
 	Shader animShader("Shaders/anim.vs", "Shaders/anim.frag");
 	Shader model_shader("Shaders/modelLoading.vs", "Shaders/modelLoading.frag");
+	Shader material_shader("Shaders/cel_material_dirlight.vs", "Shaders/cel_material_dirlight.frag");
 
 	Model BotaDer((char*)"Models/Personaje/bota.obj");
 	Model PiernaDer((char*)"Models/Personaje/piernader.obj");
@@ -199,11 +204,15 @@ int main()
 	Model BrazoIzq((char*)"Models/Personaje/brazoizq.obj");
 	Model Cabeza((char*)"Models/Personaje/cabeza.obj");
 	// Build and compile our shader program
+	ModelMultiTex facade((char*)"modelos/Facade/Facade.obj");
 
 	//Modelo de animación
      //ORIGIANAL
 	ModelAnim animacionPersonaje("Animaciones/Personaje2/MacarenaDance.dae");
 	animacionPersonaje.initShaders(animShader.Program);
+
+	//Modelos material
+	Modelo_Material monkey((char*)"modelos/monkey.obj");
     
     /* //UTILIZANDO MI CLASE
     */
@@ -392,12 +401,19 @@ int main()
 
 	// Load textures
 	vector<const GLchar*> faces;
-	faces.push_back("SkyBox/right.tga");
+	/*faces.push_back("SkyBox/right.tga");
 	faces.push_back("SkyBox/left.tga");
 	faces.push_back("SkyBox/top.tga");
 	faces.push_back("SkyBox/bottom.tga");
 	faces.push_back("SkyBox/back.tga");
-	faces.push_back("SkyBox/front.tga");
+	faces.push_back("SkyBox/front.tga");*/
+	faces.push_back("SkyBox/sh_rt.png");
+	faces.push_back("SkyBox/sh_lf.png");
+	faces.push_back("SkyBox/sh_up.png");
+	faces.push_back("SkyBox/sh_dn.png");
+	faces.push_back("SkyBox/sh_bk.png");
+	faces.push_back("SkyBox/sh_ft.png");
+
 	
 	GLuint cubemapTexture = TextureLoading::LoadCubemap(faces);
 
@@ -493,7 +509,7 @@ int main()
 		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.outerCutOff"), glm::cos(glm::radians(15.0f)));
 
 		// Set material properties
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 32.0f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 16.0f);
 
 		// Create camera transformations
 		glm::mat4 view;
@@ -521,11 +537,15 @@ int main()
 		glm::mat4 tmp = glm::mat4(1.0f); //Temp
 
 
+		glm::mat4 model(1);
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		facade.Draw(lightingShader);
+
 
 		//Carga de modelo 
 		//Personaje
 		view = camera.GetViewMatrix();
-		glm::mat4 model(1);
+		//glm::mat4 model(1);
 		tmp = model = glm::translate(model, glm::vec3(0, 1, 0));
 		model = glm::translate(model,glm::vec3(posX,posY,posZ));
 		model = glm::rotate(model, glm::radians(rot), glm::vec3(0.0f, 1.0f, 0.0));
@@ -613,7 +633,31 @@ int main()
 		animacionPersonaje.Draw(animShader);
         //animacionPersonaje.draw(glm::value_ptr(model), glm::value_ptr(view), glm::value_ptr(projection));
 		glBindVertexArray(0);
+		//*************MATERIAL
+		//Dibujando el modelo material
+		material_shader.Use();
+		view = camera.GetViewMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(material_shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(material_shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		
+		glUniform3f(glGetUniformLocation(material_shader.Program, "light.ambient"), 0.1f, 0.1f, 0.1f);
+		glUniform3f(glGetUniformLocation(material_shader.Program, "light.diffuse"), 1.0f, 1.0f, 1.0f);
+		glUniform3f(glGetUniformLocation(material_shader.Program, "light.specular"), 1.0f, 1.0f, 1.0f);
+		glUniform3f(glGetUniformLocation(material_shader.Program, "light.direction"), 0.0f,-1.0f,0.0f);
+		glUniform3f(glGetUniformLocation(material_shader.Program, "viewPos"),
+			camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
+		
+		glUniform3f(glGetUniformLocation(material_shader.Program, "material.ambient"),0.0f,  1.0f,0.0f);
+		glUniform3f(glGetUniformLocation(material_shader.Program, "material.diffuse"),0.0f, 1.0f, 0.0f);
+		glUniform3f(glGetUniformLocation(material_shader.Program, "material.specular"),0.0f, 1.0f, 0.0f);
+		glUniform1f(glGetUniformLocation(material_shader.Program, "material.shininess"),15.0f);
+		
+		model = glm::mat4(1);
+		glUniformMatrix4fv(glGetUniformLocation(material_shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
+		monkey.Draw(material_shader);
+
+		//************ MATERIAL
         // Also draw the lamp object, again binding the appropriate shader
 		lampShader.Use();
 		// Get location objects for the matrices on the lamp shader (these could be different on a different shader)
@@ -622,6 +666,7 @@ int main()
 		projLoc = glGetUniformLocation(lampShader.Program, "projection");
 
 		// Set matrices
+		view = camera.GetViewMatrix();
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		model = glm::mat4(1);

@@ -22,7 +22,7 @@ enum Camera_Movement
 // Default camera values
 const GLfloat YAW = -90.0f;
 const GLfloat PITCH = 0.0f;
-const GLfloat SPEED = 6.0f;
+const GLfloat SPEED = 10.0f;
 const GLfloat SENSITIVTY = 0.25f;
 const GLfloat ZOOM = 45.0f;
 
@@ -156,6 +156,7 @@ private:
 		front.y = sin(glm::radians(this->pitch));
 		front.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
 		this->front = glm::normalize(front);
+		//printf("front(%.2f,%.2f,%.2f)\n",front.x, front.y, front.z);
 		// Also re-calculate the Right and Up vector
 		this->right = glm::normalize(glm::cross(this->front, this->worldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
 		this->up = glm::normalize(glm::cross(this->right, this->front));

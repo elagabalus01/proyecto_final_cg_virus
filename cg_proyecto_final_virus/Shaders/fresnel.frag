@@ -14,6 +14,9 @@ out vec4 out_Color;
 uniform sampler2D tex;
 uniform vec3 lightDir;
 
+uniform float opacity;
+
+
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
@@ -44,5 +47,5 @@ void main(void)
 
 	// sample just fresnel
 	vec4 aux = texture(tex, ex_Texcoord) * mix( refractedColor, reflectedColor, clamp( vReflectionFactor, 0.0, 1.0 ) );
-	out_Color = vec4(aux.r,aux.g,aux.b,0.5);
+	out_Color = vec4(aux.r,aux.g,aux.b,opacity);
 }
