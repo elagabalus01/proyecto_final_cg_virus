@@ -16,10 +16,10 @@
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
+#[Rr]elease/
+#[Rr]eleases/
+#x64/
+#x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
@@ -65,7 +65,7 @@ StyleCopReport.xml
 *_h.h
 *.ilk
 *.meta
-*.obj
+#*.obj
 *.iobj
 *.pch
 *.pdb

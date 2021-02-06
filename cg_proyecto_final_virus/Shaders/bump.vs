@@ -38,9 +38,9 @@ void main()
     // then retrieve perpendicular vector B with the cross product of T and N
     //vec3 B = cross(N, T);
 
-    //mat3 TBN = mat3(T, B, N)  
+    //mat3 TBN = mat3(T, B, N)
     
-    TBN = transpose(mat3(T, B, N));    
+    TBN = transpose(mat3(T, B, N));
     TangentLightPos = TBN * lightPos;
     TangentViewPos  = TBN * viewPos;
     TangentFragPos  = TBN * FragPos;

@@ -102,5 +102,6 @@ vec3 CalcDirLight( DirLight light, vec3 normal, vec3 viewDir )
     vec4 texColor = texture(texture_specular1, TexCoords);    
     vec3 result=ambient+diffuse+specular;
     result = vec3(texColor.xyz*result);
+    //result = vec3(result); //Probando sin color
     return (result);
 }
