@@ -34,6 +34,7 @@ void MovimientoLinfo1( );
 void MovimientoLinfo2();
 void MatarVirus();
 void MovimientoGlobulo();
+void Reiniciar();
 
 
 // Camera
@@ -44,8 +45,7 @@ bool firstMouse = true;
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
-//Para elegir que pez se verá y por default es 0
-int figura = 0; 
+
 //Mueven al virus
 float Xvirus1 = 40.0;
 float Xvirus2 = 40.0;
@@ -520,21 +520,38 @@ void KeyCallback( GLFWwindow *window, int key, int scancode, int action, int mod
     if (keys[GLFW_KEY_1])
     {
         ActivaVirus = !ActivaVirus;
+        ActivaGlobulo = !ActivaGlobulo;
         
     }
     if (keys[GLFW_KEY_2])
     {
-        ActivalinfoP1 = !ActivalinfoP1;
+        ActivalinfoP2 = !ActivalinfoP2;
     }
     if (keys[GLFW_KEY_3])
     {
-        ActivalinfoP2 = !ActivalinfoP2;
-    }
-    if (keys[GLFW_KEY_4])
-    {
-        ActivaGlobulo = !ActivaGlobulo;
+        Reiniciar();
     }
  
+}
+
+void Reiniciar()
+{
+    Xvirus1 = 40;
+    Xvirus2 = 40;
+    Xvirus3 = 40;
+    escala = 1;
+    Ylinfo1 = 20;
+    Zlinfo1 = -30;
+    Zlinfo2 = 20;
+    Xglo = 30;
+    Yglo = 0; 
+    ActivaVirus = false;
+    ActivalinfoP1 = false;
+    ActivalinfoP2 = false;
+    ActivalinfoP3 = false;
+    ActivaGlobulo = false;
+    DesVirus = false;
+
 }
 
 void MovimientoVirus()
@@ -544,7 +561,6 @@ void MovimientoVirus()
         if (Xvirus1 > 0)
         {
             Xvirus1 -= 0.06;
-            
         }
         if (Xvirus2 > -4.5)
         {
@@ -552,8 +568,11 @@ void MovimientoVirus()
         }
         if (Xvirus3 > -6.5)
         {
-            //Xvirus3 -= 0.015;
             Xvirus3 -= 0.035;
+        }
+        if (Xvirus2 < -4.5)
+        {
+            ActivalinfoP1 = !ActivalinfoP1;
         }
     }
 }
