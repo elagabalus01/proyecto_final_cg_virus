@@ -15,7 +15,7 @@
 #include "MiAnimacion.h"
 
 using namespace std;
-int WIDTH = 800, HEIGHT=600, SCREEN_WIDTH, SCREEN_HEIGHT;
+int WIDTH = 1366, HEIGHT=780, SCREEN_WIDTH, SCREEN_HEIGHT;
 Camera  camera(glm::vec3(-100.0f, 2.0f, -45.0f));
 int main() {
     glfwInit();

@@ -22,7 +22,7 @@
 #include <SOIL2/SOIL2.h>
 
 // Properties
-const GLuint WIDTH = 800, HEIGHT = 600;
+const GLuint WIDTH = 1366, HEIGHT = 710;
 int SCREEN_WIDTH, SCREEN_HEIGHT;
 
 // Function prototypes
@@ -37,9 +37,9 @@ void MovimientoGlobulo();
 
 
 // Camera
-Camera camera( glm::vec3( -15.0f, 0.0f, 0.0f ),glm::vec3(0.0f,1.0f,0.0f),0.0f);
+Camera camera( glm::vec3( -17.0f, 0.0f, 0.0f ),glm::vec3(0.0f,1.0f,0.0f),0.0f);
 bool keys[1024];
-GLfloat lastX = 400, lastY = 300;
+GLfloat lastX = WIDTH/2, lastY = HEIGHT/2;
 bool firstMouse = true;
 
 GLfloat deltaTime = 0.0f;
