@@ -1,6 +1,6 @@
 // Std. Includes
 #include <string>
-
+#include<Windows.h>
 // GLEW
 #include <GL/glew.h>
 
@@ -72,6 +72,7 @@ bool DesVirus = false;
 
 int main( )
 {
+    FreeConsole();
     // Init GLFW
     glfwInit( );
     // Set all the required options for GLFW
@@ -82,7 +83,7 @@ int main( )
     glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
     
     // Create a GLFWwindow object that we can use for GLFW's functions
-    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "Proyecto - Escena 2 ", nullptr, nullptr );
+    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "Proyecto: vacuna - Escena 2 ", nullptr, nullptr );
     
     if ( nullptr == window )
     {
